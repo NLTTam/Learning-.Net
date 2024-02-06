@@ -23,6 +23,6 @@ jobs:
       - name: Run script if merged
         if: ${{ steps.check_merged.outputs.merged == 'true' }}
         run: |
-          curl -X POST -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }}" \
+          curl -X POST -H "Authorization: bearer ${{ secrets.TOKEN_SECRET }}" \
           https://api.github.com/repos/${{ github.repository }}/actions/workflows/playwright/dispatches \
           -d '{"ref": "main"}'
