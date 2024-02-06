@@ -1,0 +1,28 @@
+name: Auto run when merge or commit to main/master
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main, master]
+  push:
+    branches: [main, master]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Check if PR was merged
+        id: check_merged
+        run: |
+          if [[ ${{ github.event.pull_request.merged }} == true ]]; then
+            echo "::set-output name=merged::true"
+          else
+            echo "::set-output name=merged::false"
+          fi
+      - name: Run script if merged
+        if: ${{ steps.check_merged.outputs.merged == 'true' }}
+        run: |
+          curl -X POST -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }}" \
+          https://api.github.com/repos/${{ github.repository }}/actions/workflows/playwright/dispatches \
+          -d '{"ref": "main"}'
