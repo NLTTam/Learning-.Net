@@ -15,13 +15,13 @@ jobs:
       - name: Check if PR was merged
         id: check_merged
         run: |
-          if [[ ${{ github.event.pull_request.merged }} == true ]]; then
+          if [[ ${{ github.event.pull_request.merged }} ]]; then
             echo "::set-output name=merged::true"
           else
             echo "::set-output name=merged::false"
           fi
       - name: Run script if merged
-        if: ${{ steps.check_merged.outputs.merged == 'true' }}
+        if: ${{ steps.check_merged.outputs.merged }}
         run: |
           curl -X POST -H "Authorization: bearer ${{ secrets.TOKEN_SECRET }}" \
           https://api.github.com/repos/${{ github.repository }}/actions/workflows/playwright/dispatches \
